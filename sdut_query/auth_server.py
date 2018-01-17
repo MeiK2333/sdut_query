@@ -50,4 +50,4 @@ class AuthServer(object):
             'http://authserver.sdut.edu.cn/authserver/logout?service=/authserver/login')
 
     def cookies(self):
-        return self.session.cookies
+        return requests.utils.dict_from_cookiejar(self.session.cookies)
