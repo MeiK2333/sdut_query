@@ -22,3 +22,13 @@ if __name__ == '__main__':
     print('borrow info:', l.get_borrow_info())
 
     a.logout()
+
+    a = AuthServer()
+    a.login(username, password)
+    cookies = a.cookies()
+
+    for i in range(10):
+        a = AuthServer(cookies)  # 通过 cookies 复用，防止多次登陆导致账号被 ban(如果短时间内多次登陆会导致账号被 ban，无法登陆)
+        print('login:', a.login(username, password))
+
+    a.logout()
