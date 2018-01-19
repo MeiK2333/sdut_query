@@ -32,3 +32,29 @@ class Ehall(object):
             'http://ehall.sdut.edu.cn/publicapp/sys/myyktzd/api/getOverviewInfo.do')
         rjson = json.loads(rst.text)
         return rjson['datas']['SFRZH']
+
+    def get_dorm_health(self):
+        """ 获取宿舍卫生分数 """
+        self.session.get('http://ehall.sdut.edu.cn/appShow?appId=4606888687682093')  # 某些神奇的预处理
+        data = {
+            'pageSize': 50,  # 只读取一页，50 条数据
+            'pageNumber': 1  # 我就不信，一个学期能有 50 个周不成？
+        }
+        rst = self.session.get(
+            'http://ehall.sdut.edu.cn/xsfw/sys/sswsapp/modules/dorm_health_student/sswsxs_sswsxsbg.do', data=data)
+        rjson = json.loads(rst.text)
+        rlist = []
+        for i in rjson['datas']['sswsxs_sswsxsbg']['rows']:
+            d = {
+                '宿舍楼名称': i['SSLMC'],
+                '房间号': i['FJH'],
+                '周次': i['ZC'],
+                '检查日期': i['JCRQ'],
+                '分数': i['FS']
+            }
+            rlist.append(d)
+        rdata = {
+            'totalSize': rjson['datas']['sswsxs_sswsxsbg']['totalSize'],
+            'data': rlist
+        }
+        return rdata
