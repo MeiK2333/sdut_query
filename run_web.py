@@ -1,7 +1,7 @@
 # coding=utf-8
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from sdut_query import AuthServer, Ehall, Ecard, Lib
+from sdut_query import AuthServer, Ehall, Ecard, Lib, Jwglxt
 import json
 
 app = Flask(__name__)
@@ -32,7 +32,6 @@ def card_balance():
         data = ecard.balance()
         rdata = {
             'code': 0,
-            'msg': 'success',
             'data': {
                 'item': '校园卡余额',
                 'unit': '元',
@@ -71,7 +70,6 @@ def card_info():
         rdata = {
             'code': 0,
             'name': '校园卡消费记录',
-            'type': 'list',
             'data': data
         }
         if cookies:
@@ -104,13 +102,65 @@ def borrow_info():
         rdata = {
             'code': 0,
             'name': '借阅图书列表',
-            'type': 'list',
             'data': data
         }
         if cookies:
             rdata['data']['cookies'] = cookies
         else:
             auth_server.logout()
+    else:
+        rdata = {
+            'code': 1,
+            'msg': '用户名或密码错误'
+        }
+    return jsonify(rdata)
+
+
+@app.route('/dorm_health/', methods=['POST'])
+def dorm_health():
+    """ 宿舍卫生查询接口 """
+    username = request.form.get('username')
+    password = request.form.get('password')
+    cookies = request.form.get('cookies', None)
+    if cookies:
+        cookies = json.loads(cookies)
+    auth_server = AuthServer(cookies)
+    if auth_server.login(username, password):
+        if cookies:
+            cookies = auth_server.cookies()
+        ehall = Ehall(auth_server)
+        ehall.login()
+        data = ehall.get_dorm_health()
+        rdata = {
+            'code': 0,
+            'name': '宿舍卫生评分',
+            'data': data
+        }
+        if cookies:
+            rdata['data']['cookies'] = cookies
+        else:
+            auth_server.logout()
+    else:
+        rdata = {
+            'code': 1,
+            'msg': '用户名或密码错误'
+        }
+    return jsonify(rdata)
+
+
+@app.route('/schedule/', methods=['POST'])
+def schedule():
+    """ 个人课表查询接口 """
+    username = request.form.get('username')
+    password = request.form.get('password')
+    jwglxt = Jwglxt()
+    if jwglxt.login(username, password):
+        data = jwglxt.get_schedule()
+        rdata = {
+            'code': 0,
+            'name': '课程信息',
+            'data': data
+        }
     else:
         rdata = {
             'code': 1,
