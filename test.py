@@ -1,5 +1,5 @@
 # coding=utf-8
-from sdut_query import AuthServer, Ehall, Ecard, Lib, Jwglxt
+from sdut_graphql.spriders import AuthServer, Ehall, Ecard, Lib, Jwglxt
 
 if __name__ == '__main__':
     a = AuthServer()
@@ -12,10 +12,10 @@ if __name__ == '__main__':
     print('name:', e.get_name())
     print('dorm health', e.get_dorm_health())
 
-    # c = Ecard(e)
-    # print('Ecard login:', c.login())
-    # print('balance:', c.balance())
-    # print('consume:', c.consume_info())
+    c = Ecard(e)
+    print('Ecard login:', c.login())
+    print('balance:', c.balance())
+    print('consume:', c.consume_info())
 
     l = Lib(a)
     print('Lib login:', l.login())
