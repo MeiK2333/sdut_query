@@ -3,11 +3,64 @@
 SDUT 的一些信息的爬虫
 
 
-## 使用
+## 接口
+
+内置接口采用 [GraphQL](http://docs.graphene-python.org/) 规范，使用 Django 开发，支持二次开发成数据统计的网站。
+
+### 启动
+
 ```python
-python3 test.py
+python3 manage.py runserver
 ```
 
+### 使用
+
+访问 ```localhost:8000/graphql``` 以使用接口。
+
+### 示例
+
+输入
+```graphql
+{
+  ecard(username: "你的学号", password: "你的密码") {
+    name
+    code
+    message
+    status
+    balance
+    consume {
+      time
+      reason
+      amount
+      balance
+      position
+      termName
+    }
+  }
+}
+```
+
+返回结果
+```graphql
+{
+  "data": {
+    "ecard": {
+      "name": "你的姓名",
+      "code": 0,
+      "message": "OK",
+      "status": "OK",
+      "balance": 888.88,
+      "consume": [
+        ......(消费详情)
+      ]
+    }
+  }
+}
+```
+
+更多的使用方法可以参照页面右侧的 ```Documentation Explorer``` 。
+
+## 爬虫
 
 ### AuthServer
 [山东理工大学校内统一身份认证平台](http://authserver.sdut.edu.cn/authserver/login)，通过统一身份认证可以免账号密码登录至其他平台。
