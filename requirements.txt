@@ -1,5 +1,5 @@
 beautifulsoup4==4.6.0
-Django==2.0.8
+django>=2.0.10
 graphene-django==2.0.0
 requests==2.20.0
 rsa==3.4.2
