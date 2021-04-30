@@ -2,5 +2,5 @@ beautifulsoup4==4.6.0
 django>=2.0.10
 graphene-django==2.0.0
 requests==2.20.0
-rsa==4.1
+rsa==4.7
 django-cors-headers==2.2.0
